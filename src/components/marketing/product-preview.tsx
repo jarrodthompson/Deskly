@@ -7,7 +7,7 @@ export function ProductPreview() {
         <span className="size-2.5 rounded-full bg-red-400" />
         <span className="size-2.5 rounded-full bg-amber-400" />
         <span className="size-2.5 rounded-full bg-emerald-400" />
-        <span className="ml-3 text-xs text-muted-foreground">app.deskly.io/dashboard</span>
+        <span className="ml-3 text-xs text-muted-foreground">app.deskly.co.za/dashboard</span>
       </div>
       <div className="flex">
         <div className="hidden sm:flex w-14 flex-col items-center gap-3 border-r bg-slate-900 py-4">
