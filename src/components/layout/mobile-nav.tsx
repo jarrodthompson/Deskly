@@ -15,9 +15,9 @@ export function MobileNav({ role }: { role: StaffRole }) {
     <div className="h-full flex flex-col bg-sidebar text-sidebar-foreground">
       <div className="flex items-center h-16 shrink-0 px-4 gap-2.5">
         <div className="size-8 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
-          <span className="text-white font-bold text-sm">H</span>
+          <span className="text-white font-bold text-sm">D</span>
         </div>
-        <span className="font-semibold text-[15px] text-white">HelpdeskSaaS</span>
+        <span className="font-semibold text-[15px] text-white">Deskly</span>
       </div>
       <nav className="flex-1 overflow-y-auto px-2.5 py-2 space-y-6">
         <Group label="Workspace" items={visiblePrimary} pathname={pathname} />

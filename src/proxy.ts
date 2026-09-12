@@ -11,9 +11,10 @@ export default auth((req) => {
   const isPortalRoute = pathname.startsWith("/portal");
   const isPortalAuthRoute = pathname.startsWith("/portal/sign-in");
   const isStaffAuthRoute = pathname === "/sign-in";
+  const isLandingRoute = pathname === "/";
   const isPublicRoute = pathname.startsWith("/api/auth") || pathname.startsWith("/_next");
 
-  if (isPublicRoute) return NextResponse.next();
+  if (isPublicRoute || isLandingRoute) return NextResponse.next();
 
   if (isPortalRoute) {
     if (isPortalAuthRoute) {

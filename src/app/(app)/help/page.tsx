@@ -7,7 +7,7 @@ export default function HelpPage() {
     <div className="p-4 md:p-6 max-w-[800px] mx-auto space-y-4">
       <div>
         <h1 className="text-xl md:text-2xl font-semibold tracking-tight">Help</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">Resources for using HelpdeskSaaS.</p>
+        <p className="text-sm text-muted-foreground mt-0.5">Resources for using Deskly.</p>
       </div>
 
       <Link href="/knowledge-base">

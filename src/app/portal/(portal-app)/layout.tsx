@@ -19,9 +19,9 @@ export default async function PortalAppLayout({ children }: { children: React.Re
       <header className="sticky top-0 z-30 h-16 border-b bg-background/95 backdrop-blur flex items-center gap-4 px-4 md:px-6">
         <Link href="/portal" className="flex items-center gap-2.5 shrink-0">
           <div className="size-8 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
-            <span className="text-white font-bold text-sm">H</span>
+            <span className="text-white font-bold text-sm">D</span>
           </div>
-          <span className="font-semibold tracking-tight hidden sm:inline">HelpdeskSaaS Support</span>
+          <span className="font-semibold tracking-tight hidden sm:inline">Deskly Support</span>
         </Link>
 
         <nav className="flex items-center gap-1 ml-2">

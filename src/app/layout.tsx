@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "HelpdeskSaaS",
+  title: "Deskly",
   description: "Modern SaaS ticketing and helpdesk management",
 };
 

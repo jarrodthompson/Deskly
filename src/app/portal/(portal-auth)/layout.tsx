@@ -5,9 +5,9 @@ export default function PortalAuthLayout({ children }: { children: React.ReactNo
       <div className="w-full max-w-sm">
         <div className="flex items-center justify-center gap-2.5 mb-8">
           <div className="size-9 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center shadow-sm">
-            <span className="text-white font-bold">H</span>
+            <span className="text-white font-bold">D</span>
           </div>
-          <span className="font-semibold text-lg tracking-tight">HelpdeskSaaS Support</span>
+          <span className="font-semibold text-lg tracking-tight">Deskly Support</span>
         </div>
         {children}
       </div>

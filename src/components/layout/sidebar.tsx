@@ -49,10 +49,10 @@ export function Sidebar({ user }: { user: SidebarUser }) {
     >
       <div className={cn("flex items-center h-16 shrink-0 px-4 gap-2.5", collapsed && "justify-center px-0")}>
         <div className="size-8 shrink-0 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center shadow-sm">
-          <span className="text-white font-bold text-sm">H</span>
+          <span className="text-white font-bold text-sm">D</span>
         </div>
         {!collapsed && (
-          <span className="font-semibold text-[15px] tracking-tight text-white">HelpdeskSaaS</span>
+          <span className="font-semibold text-[15px] tracking-tight text-white">Deskly</span>
         )}
       </div>
 
