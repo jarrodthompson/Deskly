@@ -26,7 +26,9 @@ declare module "next-auth" {
   }
 }
 
-declare module "next-auth/jwt" {
+// `next-auth/jwt` only re-exports from `@auth/core/jwt`, so the JWT interface
+// has to be augmented at its source for declaration merging to apply.
+declare module "@auth/core/jwt" {
   interface JWT {
     id: string;
     kind: "staff" | "customer";

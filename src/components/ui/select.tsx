@@ -5,7 +5,22 @@ import { Select as SelectPrimitive } from "@base-ui/react/select"
 import { cn } from "cn"
 import { ChevronDownIcon, CheckIcon, ChevronUpIcon } from "lucide-react"
 
-const Select = SelectPrimitive.Root
+// Base UI reports a cleared selection as `null`. Every select in this app is a
+// single-value string select, so the empty string is the cleared value and call
+// sites never have to handle null.
+function Select({
+  onValueChange,
+  ...props
+}: Omit<SelectPrimitive.Root.Props<string>, "onValueChange"> & {
+  onValueChange?: (value: string) => void
+}) {
+  return (
+    <SelectPrimitive.Root
+      {...props}
+      onValueChange={(value) => onValueChange?.(value ?? "")}
+    />
+  )
+}
 
 function SelectGroup({ className, ...props }: SelectPrimitive.Group.Props) {
   return (

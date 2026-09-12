@@ -40,7 +40,7 @@ export function StatusDonut({ data }: { data: { status: TicketStatus; count: num
         </Pie>
         <Tooltip
           contentStyle={tooltipStyle}
-          formatter={(value: number, _name, item) => [value, STATUS_META[item.payload.status as TicketStatus].label]}
+          formatter={(value, _name, item) => [Number(value), STATUS_META[item.payload.status as TicketStatus].label]}
         />
       </PieChart>
     </ResponsiveContainer>
@@ -117,7 +117,7 @@ export function ComplianceTrendChart({ data }: { data: { label: string; complian
         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
         <XAxis dataKey="label" tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} />
         <YAxis tick={{ fontSize: 12, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} domain={[0, 100]} unit="%" />
-        <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v}%`, "SLA Compliance"]} />
+        <Tooltip contentStyle={tooltipStyle} formatter={(v) => [`${v}%`, "SLA Compliance"]} />
         <Line type="monotone" dataKey="compliance" stroke="#06b6d4" strokeWidth={2} dot={{ r: 3 }} />
       </LineChart>
     </ResponsiveContainer>
