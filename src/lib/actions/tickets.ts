@@ -6,6 +6,12 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth/config";
 import { computeDueDates, findRule } from "@/lib/sla";
 import { runAutomationsForNewTicket } from "@/lib/automation-engine";
+import {
+  notifyAgentReplied,
+  notifyTicketAssigned,
+  notifyTicketCreated,
+  notifyTicketResolved,
+} from "@/lib/email/notify";
 import type { TicketPriority, TicketStatus, TicketSource } from "@prisma/client";
 
 async function requireStaffSession() {
@@ -104,6 +110,9 @@ export async function createTicket(input: CreateTicketInput) {
 
   await runAutomationsForNewTicket(ticket.id);
 
+  await notifyTicketCreated(ticket.id);
+  if (input.assignedAgentId) await notifyTicketAssigned(ticket.id, input.assignedAgentId);
+
   revalidatePath("/tickets");
   revalidatePath("/dashboard");
   redirect(`/tickets/${ticket.id}`);
@@ -137,6 +146,8 @@ export async function updateTicketStatus(ticketId: string, status: TicketStatus)
       toValue: status,
     },
   });
+
+  if (isResolving) await notifyTicketResolved(ticketId);
 
   revalidatePath("/tickets");
   revalidatePath(`/tickets/${ticketId}`);
@@ -196,6 +207,7 @@ export async function assignAgent(ticketId: string, agentId: string | null) {
         ticketId,
       },
     });
+    await notifyTicketAssigned(ticketId, agentId);
   }
 
   revalidatePath("/tickets");
@@ -297,6 +309,8 @@ export async function addReply(ticketId: string, body: string, attachments?: { f
       ticketId,
     },
   });
+
+  await notifyAgentReplied(ticketId, session.user.name, body);
 
   revalidatePath(`/tickets/${ticketId}`);
   revalidatePath("/tickets");

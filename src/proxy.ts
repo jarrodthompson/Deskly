@@ -12,7 +12,9 @@ export default auth((req) => {
   const isPortalAuthRoute = pathname.startsWith("/portal/sign-in");
   const isStaffAuthRoute = pathname === "/sign-in";
   const isLandingRoute = pathname === "/";
-  const isPublicRoute = pathname.startsWith("/api/auth") || pathname.startsWith("/_next");
+  // API routes authenticate themselves and must answer with JSON status codes,
+  // not an HTML redirect, so they are never gated here.
+  const isPublicRoute = pathname.startsWith("/api/") || pathname.startsWith("/_next");
 
   if (isPublicRoute || isLandingRoute) return NextResponse.next();
 

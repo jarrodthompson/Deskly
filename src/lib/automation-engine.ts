@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
-import type { TicketPriority, TicketStatus } from "@prisma/client";
+import { isEmailConfigured } from "@/lib/email/client";
+import { notifyTicketCreated } from "@/lib/email/notify";
+import type { Prisma, TicketPriority, TicketStatus } from "@prisma/client";
 
 type Condition = { field: string; operator: "equals" | "contains"; value: string };
 
@@ -57,7 +59,7 @@ export async function runAutomationsForNewTicket(ticketId: string) {
     const isMatch = conditions.length > 0 && conditions.every((c) => matchesCondition(c, ctx));
     if (!isMatch) continue;
 
-    const resultLog: Record<string, unknown>[] = [];
+    const resultLog: Prisma.InputJsonValue[] = [];
 
     for (const action of automation.actions) {
       const value = action.value as Record<string, string>;
@@ -121,7 +123,8 @@ export async function runAutomationsForNewTicket(ticketId: string) {
           break;
         }
         case "SEND_EMAIL": {
-          resultLog.push({ action: "SEND_EMAIL", note: "No email provider configured; skipped." });
+          await notifyTicketCreated(ticketId);
+          resultLog.push({ action: "SEND_EMAIL", to: "customer", configured: isEmailConfigured() });
           break;
         }
       }

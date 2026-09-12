@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth/config";
 import { computeDueDates, findRule } from "@/lib/sla";
 import { runAutomationsForNewTicket } from "@/lib/automation-engine";
+import { notifyCustomerReplied, notifyTicketCreated } from "@/lib/email/notify";
 import type { TicketPriority } from "@prisma/client";
 
 async function requireCustomerSession() {
@@ -48,6 +49,7 @@ export async function submitPortalTicket(input: { subject: string; description: 
   await prisma.ticketEvent.create({ data: { ticketId: ticket.id, type: "CREATED" } });
 
   await runAutomationsForNewTicket(ticket.id);
+  await notifyTicketCreated(ticket.id);
 
   revalidatePath("/portal");
   revalidatePath("/portal/tickets");
@@ -71,6 +73,7 @@ export async function addPortalReply(ticketId: string, body: string) {
     await prisma.notification.create({
       data: { type: "CUSTOMER_REPLIED", title: "Customer replied", body: `${ticket.subject} has a new customer reply.`, userId: ticket.assignedAgentId, ticketId },
     });
+    await notifyCustomerReplied(ticketId, body);
   }
 
   revalidatePath(`/portal/tickets/${ticketId}`);
