@@ -1,0 +1,10 @@
+# Local secrets must never be uploaded with a CLI deploy. Vercel builds read
+# their variables from the project settings instead, and a stray .env here
+# silently overrides anything not set there (e.g. AUTH_URL=localhost).
+.env*
+!.env.example
+
+.vercel
+node_modules
+.next
+/public/uploads
