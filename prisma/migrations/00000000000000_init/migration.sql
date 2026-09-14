@@ -771,3 +771,21 @@ ALTER TABLE "TicketCustomFieldValue" ADD CONSTRAINT "TicketCustomFieldValue_fiel
 
 ALTER TABLE "public"."TicketCustomFieldValue" ENABLE ROW LEVEL SECURITY;
 
+
+-- Ticket attachment storage. The bucket pre-existed from an earlier project with a
+-- narrower config, so settings are enforced explicitly rather than insert-if-missing.
+-- Access is service-role only: the app authorises downloads in /api/files, so no
+-- storage.objects policies should grant direct access to this bucket.
+insert into storage.buckets (id, name, public) values ('ticket-attachments', 'ticket-attachments', false)
+on conflict (id) do nothing;
+update storage.buckets
+set public = false,
+    file_size_limit = 15728640,
+    allowed_mime_types = array[
+      'image/png','image/jpeg','image/gif','image/webp','application/pdf','text/plain','text/csv',
+      'application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/zip','application/json','application/octet-stream'
+    ]
+where id = 'ticket-attachments';
+drop policy if exists ticket_attachments_storage_insert on storage.objects;
+drop policy if exists ticket_attachments_storage_select on storage.objects;

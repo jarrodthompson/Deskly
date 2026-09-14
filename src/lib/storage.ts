@@ -15,11 +15,12 @@ function storageClient() {
   return createClient(url, serviceRoleKey, { auth: { persistSession: false } });
 }
 
-export async function uploadAttachment(objectPath: string, body: Buffer, contentType: string) {
-  const { error } = await storageClient()
+export async function createAttachmentSignedUploadUrl(objectPath: string) {
+  const { data, error } = await storageClient()
     .storage.from(ATTACHMENT_BUCKET)
-    .upload(objectPath, body, { contentType, upsert: false });
-  if (error) throw new Error(error.message);
+    .createSignedUploadUrl(objectPath);
+  if (error || !data) throw new Error(error?.message ?? "Could not create an upload link.");
+  return data.signedUrl;
 }
 
 export async function createAttachmentSignedUrl(objectPath: string, expiresInSeconds = 60) {

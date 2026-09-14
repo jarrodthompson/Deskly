@@ -26,15 +26,28 @@ export function AttachmentUploader({
     try {
       const uploaded: UploadedFile[] = [];
       for (const file of Array.from(fileList)) {
-        const formData = new FormData();
-        formData.append("file", file);
-        const res = await fetch("/api/upload", { method: "POST", body: formData });
-        const data = await res.json();
-        if (!res.ok) {
-          toast.error(data.error ?? `Failed to upload ${file.name}`);
+        const signRes = await fetch("/api/upload", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ fileName: file.name, fileType: file.type, fileSize: file.size }),
+        });
+        const signed = await signRes.json();
+        if (!signRes.ok) {
+          toast.error(signed.error ?? `Failed to upload ${file.name}`);
           continue;
         }
-        uploaded.push(data);
+
+        const putRes = await fetch(signed.uploadUrl, {
+          method: "PUT",
+          headers: { "Content-Type": signed.fileType, "x-upsert": "false" },
+          body: file,
+        });
+        if (!putRes.ok) {
+          toast.error(`Failed to upload ${file.name}`);
+          continue;
+        }
+
+        uploaded.push({ fileName: file.name, fileUrl: signed.fileUrl, fileType: signed.fileType, fileSize: file.size });
       }
       onChange([...files, ...uploaded]);
     } finally {

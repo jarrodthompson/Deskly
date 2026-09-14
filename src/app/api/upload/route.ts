@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
 import { randomUUID } from "crypto";
 import { auth } from "@/lib/auth/config";
-import { attachmentUrlForPath, isStorageConfigured, uploadAttachment } from "@/lib/storage";
+import { attachmentUrlForPath, createAttachmentSignedUploadUrl, isStorageConfigured } from "@/lib/storage";
 
 const ALLOWED_TYPES = [
   "image/png",
@@ -18,8 +17,11 @@ const ALLOWED_TYPES = [
   "application/json",
   "application/octet-stream",
 ];
+// Also enforced by the bucket's file_size_limit, which is what stops a client lying here.
 const MAX_SIZE = 15 * 1024 * 1024;
 
+// Issues a signed upload URL so the browser sends the file straight to storage.
+// Proxying the bytes through this function would hit Vercel's 4.5MB body limit.
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -28,30 +30,30 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "File storage is not configured on this server." }, { status: 503 });
   }
 
-  const formData = await req.formData();
-  const file = formData.get("file");
-  if (!(file instanceof File)) return NextResponse.json({ error: "No file provided" }, { status: 400 });
-  if (file.size > MAX_SIZE) return NextResponse.json({ error: "File exceeds 15MB limit" }, { status: 400 });
-  if (file.type && !ALLOWED_TYPES.includes(file.type)) {
-    return NextResponse.json({ error: `File type ${file.type} is not allowed` }, { status: 400 });
+  const { fileName, fileType, fileSize } = (await req.json().catch(() => ({}))) as {
+    fileName?: unknown;
+    fileType?: unknown;
+    fileSize?: unknown;
+  };
+  if (typeof fileName !== "string" || !fileName || typeof fileSize !== "number") {
+    return NextResponse.json({ error: "Invalid file details" }, { status: 400 });
+  }
+  if (fileSize > MAX_SIZE) return NextResponse.json({ error: "File exceeds 15MB limit" }, { status: 400 });
+
+  const contentType = typeof fileType === "string" && fileType ? fileType : "application/octet-stream";
+  if (!ALLOWED_TYPES.includes(contentType)) {
+    return NextResponse.json({ error: `File type ${contentType} is not allowed` }, { status: 400 });
   }
 
-  const rawExt = path.extname(file.name).slice(1).toLowerCase();
+  const rawExt = fileName.includes(".") ? fileName.split(".").pop()!.toLowerCase() : "";
   const ext = /^[a-z0-9]{1,12}$/.test(rawExt) ? `.${rawExt}` : "";
   const objectPath = `tickets/${randomUUID()}${ext}`;
-  const contentType = file.type || "application/octet-stream";
 
   try {
-    await uploadAttachment(objectPath, Buffer.from(await file.arrayBuffer()), contentType);
+    const uploadUrl = await createAttachmentSignedUploadUrl(objectPath);
+    return NextResponse.json({ uploadUrl, fileUrl: attachmentUrlForPath(objectPath), fileType: contentType });
   } catch (error) {
-    console.error("[upload] failed", error);
+    console.error("[upload] signing failed", error);
     return NextResponse.json({ error: "Upload failed. Please try again." }, { status: 502 });
   }
-
-  return NextResponse.json({
-    fileName: file.name,
-    fileUrl: attachmentUrlForPath(objectPath),
-    fileType: contentType,
-    fileSize: file.size,
-  });
 }
