@@ -29,11 +29,6 @@ export default function SignInPage() {
     router.refresh();
   }
 
-  function fillDemo(role: string) {
-    setEmail(`${role}@deskly.example`);
-    setPassword("Helpdesk2026!");
-  }
-
   return (
     <Card className="shadow-sm">
       <CardHeader>
@@ -44,7 +39,7 @@ export default function SignInPage() {
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@deskly.example" />
+            <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@company.com" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="password">Password</Label>
@@ -55,16 +50,6 @@ export default function SignInPage() {
             Sign in
           </Button>
         </form>
-
-        <div className="mt-6 pt-5 border-t">
-          <p className="text-xs font-medium text-muted-foreground mb-2">Demo accounts (password: Helpdesk2026!)</p>
-          <div className="grid grid-cols-2 gap-1.5">
-            <Button type="button" variant="outline" size="sm" onClick={() => fillDemo("admin")}>Admin</Button>
-            <Button type="button" variant="outline" size="sm" onClick={() => fillDemo("manager")}>Manager</Button>
-            <Button type="button" variant="outline" size="sm" onClick={() => fillDemo("agent")}>Agent</Button>
-            <Button type="button" variant="outline" size="sm" onClick={() => fillDemo("leader")}>Team Leader</Button>
-          </div>
-        </div>
       </CardContent>
     </Card>
   );
