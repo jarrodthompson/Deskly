@@ -52,8 +52,8 @@ export default function PortalSignInPage() {
         </form>
         <div className="mt-6 pt-5 border-t">
           <p className="text-xs font-medium text-muted-foreground mb-2">Demo account (password: Helpdesk2026!)</p>
-          <Button type="button" variant="outline" size="sm" className="w-full" onClick={() => { setEmail("jarrod.kim@acmeltd.com"); setPassword("Helpdesk2026!"); }}>
-            jarrod.kim@acmeltd.com
+          <Button type="button" variant="outline" size="sm" className="w-full" onClick={() => { setEmail("jarrod.kim@acmeltd.example"); setPassword("Helpdesk2026!"); }}>
+            jarrod.kim@acmeltd.example
           </Button>
         </div>
       </CardContent>

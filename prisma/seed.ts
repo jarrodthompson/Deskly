@@ -72,15 +72,15 @@ async function main() {
   console.log("Seeding staff users...");
   const passwordHash = await bcrypt.hash(DEMO_PASSWORD, 10);
   const userDefs = [
-    { name: "Grace Chen", email: "superadmin@helpdesksaas.com", role: "SUPER_ADMIN", team: "Infrastructure", status: "ONLINE", title: "VP of Support" },
-    { name: "Priya Sharma", email: "admin@helpdesksaas.com", role: "ADMIN", team: null, status: "ONLINE", title: "Support Operations Admin" },
-    { name: "Marcus Webb", email: "manager@helpdesksaas.com", role: "MANAGER", team: null, status: "BUSY", title: "Support Manager" },
-    { name: "Sofia Martinez", email: "leader@helpdesksaas.com", role: "TEAM_LEADER", team: "Technical Support", status: "ONLINE", title: "Technical Support Team Lead" },
-    { name: "Ethan Brooks", email: "agent@helpdesksaas.com", role: "AGENT", team: "Technical Support", status: "ONLINE", title: "Support Agent" },
-    { name: "Noah Kim", email: "noah.kim@helpdesksaas.com", role: "AGENT", team: "Billing", status: "AWAY", title: "Billing Support Agent" },
-    { name: "Ava Patel", email: "ava.patel@helpdesksaas.com", role: "AGENT", team: "Payments", status: "ONLINE", title: "Payments Support Agent" },
-    { name: "Liam O'Connor", email: "liam.oconnor@helpdesksaas.com", role: "AGENT", team: "Customer Service", status: "OFFLINE", title: "Customer Service Agent" },
-    { name: "Daniel Osei", email: "readonly@helpdesksaas.com", role: "READ_ONLY", team: null, status: "OFFLINE", title: "Support Auditor" },
+    { name: "Grace Chen", email: "superadmin@deskly.example", role: "SUPER_ADMIN", team: "Infrastructure", status: "ONLINE", title: "VP of Support" },
+    { name: "Priya Sharma", email: "admin@deskly.example", role: "ADMIN", team: null, status: "ONLINE", title: "Support Operations Admin" },
+    { name: "Marcus Webb", email: "manager@deskly.example", role: "MANAGER", team: null, status: "BUSY", title: "Support Manager" },
+    { name: "Sofia Martinez", email: "leader@deskly.example", role: "TEAM_LEADER", team: "Technical Support", status: "ONLINE", title: "Technical Support Team Lead" },
+    { name: "Ethan Brooks", email: "agent@deskly.example", role: "AGENT", team: "Technical Support", status: "ONLINE", title: "Support Agent" },
+    { name: "Noah Kim", email: "noah.kim@deskly.example", role: "AGENT", team: "Billing", status: "AWAY", title: "Billing Support Agent" },
+    { name: "Ava Patel", email: "ava.patel@deskly.example", role: "AGENT", team: "Payments", status: "ONLINE", title: "Payments Support Agent" },
+    { name: "Liam O'Connor", email: "liam.oconnor@deskly.example", role: "AGENT", team: "Customer Service", status: "OFFLINE", title: "Customer Service Agent" },
+    { name: "Daniel Osei", email: "readonly@deskly.example", role: "READ_ONLY", team: null, status: "OFFLINE", title: "Support Auditor" },
   ] as const;
 
   const users = new Map<string, { id: string; role: string }>();
@@ -100,7 +100,7 @@ async function main() {
     });
     users.set(u.email, { id: user.id, role: u.role });
   }
-  const agentPool = ["agent@helpdesksaas.com", "noah.kim@helpdesksaas.com", "ava.patel@helpdesksaas.com", "liam.oconnor@helpdesksaas.com", "leader@helpdesksaas.com"];
+  const agentPool = ["agent@deskly.example", "noah.kim@deskly.example", "ava.patel@deskly.example", "liam.oconnor@deskly.example", "leader@deskly.example"];
 
   console.log("Seeding categories...");
   const categoryDefs: Record<string, string[]> = {
@@ -170,11 +170,11 @@ async function main() {
 
   console.log("Seeding companies...");
   const companyDefs = [
-    { name: "Acme Ltd", industry: "E-commerce", website: "acmeltd.com", plan: "PREMIUM", sla: enterpriseSla.id, manager: "manager@helpdesksaas.com" },
-    { name: "Nimbus Cloud Systems", industry: "SaaS / Cloud Infrastructure", website: "nimbuscloud.io", plan: "ENTERPRISE", sla: enterpriseSla.id, manager: "manager@helpdesksaas.com" },
-    { name: "Brightside Retail Co", industry: "Retail", website: "brightsideretail.com", plan: "STANDARD", sla: standardSla.id, manager: "admin@helpdesksaas.com" },
-    { name: "Fintrust Bank", industry: "Financial Services", website: "fintrustbank.com", plan: "ENTERPRISE", sla: enterpriseSla.id, manager: "admin@helpdesksaas.com" },
-    { name: "Harbor Logistics", industry: "Logistics & Freight", website: "harborlogistics.com", plan: "BASIC", sla: standardSla.id, manager: "manager@helpdesksaas.com" },
+    { name: "Acme Ltd", industry: "E-commerce", website: "acmeltd.com", plan: "PREMIUM", sla: enterpriseSla.id, manager: "manager@deskly.example" },
+    { name: "Nimbus Cloud Systems", industry: "SaaS / Cloud Infrastructure", website: "nimbuscloud.io", plan: "ENTERPRISE", sla: enterpriseSla.id, manager: "manager@deskly.example" },
+    { name: "Brightside Retail Co", industry: "Retail", website: "brightsideretail.com", plan: "STANDARD", sla: standardSla.id, manager: "admin@deskly.example" },
+    { name: "Fintrust Bank", industry: "Financial Services", website: "fintrustbank.com", plan: "ENTERPRISE", sla: enterpriseSla.id, manager: "admin@deskly.example" },
+    { name: "Harbor Logistics", industry: "Logistics & Freight", website: "harborlogistics.com", plan: "BASIC", sla: standardSla.id, manager: "manager@deskly.example" },
   ] as const;
   const companies = new Map<string, string>();
   for (const c of companyDefs) {
@@ -186,7 +186,8 @@ async function main() {
         name: c.name,
         industry: c.industry,
         website: `https://${c.website}`,
-        email: `support@${c.website}`,
+        // Reserved .example domain so demo data can never email a real mailbox.
+        email: `support@${c.website.split(".")[0]}.example`,
         supportPlan: c.plan,
         slaPolicyId: c.sla,
         accountManagerId: users.get(c.manager)!.id,
@@ -197,16 +198,16 @@ async function main() {
 
   console.log("Seeding customers...");
   const customerDefs = [
-    { name: "Jarrod Kim", email: "jarrod.kim@acmeltd.com", company: "Acme Ltd", phone: "+1 415 555 0142", location: "San Francisco, CA" },
-    { name: "Isabella Cruz", email: "isabella.cruz@acmeltd.com", company: "Acme Ltd", phone: "+1 415 555 0198", location: "San Francisco, CA" },
-    { name: "Marcus Lee", email: "marcus.lee@nimbuscloud.io", company: "Nimbus Cloud Systems", phone: "+1 206 555 0110", location: "Seattle, WA" },
-    { name: "Hannah Foster", email: "hannah.foster@brightsideretail.com", company: "Brightside Retail Co", phone: "+1 312 555 0177", location: "Chicago, IL" },
-    { name: "David Okafor", email: "david.okafor@fintrustbank.com", company: "Fintrust Bank", phone: "+1 212 555 0134", location: "New York, NY" },
-    { name: "Elena Vasquez", email: "elena.vasquez@fintrustbank.com", company: "Fintrust Bank", phone: "+1 212 555 0189", location: "New York, NY" },
-    { name: "Tom Whitfield", email: "tom.whitfield@harborlogistics.com", company: "Harbor Logistics", phone: "+1 713 555 0121", location: "Houston, TX" },
-    { name: "Chloe Adams", email: "chloe.adams@gmail.com", company: null, phone: "+1 480 555 0165", location: "Phoenix, AZ" },
-    { name: "Ryan Mitchell", email: "ryan.mitchell@outlook.com", company: null, phone: "+1 617 555 0143", location: "Boston, MA" },
-    { name: "Priya Desai", email: "priya.desai@yahoo.com", company: null, phone: "+1 305 555 0187", location: "Miami, FL" },
+    { name: "Jarrod Kim", email: "jarrod.kim@acmeltd.example", company: "Acme Ltd", phone: "+1 415 555 0142", location: "San Francisco, CA" },
+    { name: "Isabella Cruz", email: "isabella.cruz@acmeltd.example", company: "Acme Ltd", phone: "+1 415 555 0198", location: "San Francisco, CA" },
+    { name: "Marcus Lee", email: "marcus.lee@nimbuscloud.example", company: "Nimbus Cloud Systems", phone: "+1 206 555 0110", location: "Seattle, WA" },
+    { name: "Hannah Foster", email: "hannah.foster@brightsideretail.example", company: "Brightside Retail Co", phone: "+1 312 555 0177", location: "Chicago, IL" },
+    { name: "David Okafor", email: "david.okafor@fintrustbank.example", company: "Fintrust Bank", phone: "+1 212 555 0134", location: "New York, NY" },
+    { name: "Elena Vasquez", email: "elena.vasquez@fintrustbank.example", company: "Fintrust Bank", phone: "+1 212 555 0189", location: "New York, NY" },
+    { name: "Tom Whitfield", email: "tom.whitfield@harborlogistics.example", company: "Harbor Logistics", phone: "+1 713 555 0121", location: "Houston, TX" },
+    { name: "Chloe Adams", email: "chloe.adams@mail.example", company: null, phone: "+1 480 555 0165", location: "Phoenix, AZ" },
+    { name: "Ryan Mitchell", email: "ryan.mitchell@mail.example", company: null, phone: "+1 617 555 0143", location: "Boston, MA" },
+    { name: "Priya Desai", email: "priya.desai@mail.example", company: null, phone: "+1 305 555 0187", location: "Miami, FL" },
   ] as const;
   const customers = new Map<string, string>();
   const customerPasswordHash = await bcrypt.hash(DEMO_PASSWORD, 10);
@@ -225,11 +226,11 @@ async function main() {
     });
     customers.set(c.email, customer.id);
   }
-  await prisma.company.update({ where: { id: companies.get("Acme Ltd")! }, data: { primaryContactId: customers.get("jarrod.kim@acmeltd.com") } });
-  await prisma.company.update({ where: { id: companies.get("Nimbus Cloud Systems")! }, data: { primaryContactId: customers.get("marcus.lee@nimbuscloud.io") } });
-  await prisma.company.update({ where: { id: companies.get("Brightside Retail Co")! }, data: { primaryContactId: customers.get("hannah.foster@brightsideretail.com") } });
-  await prisma.company.update({ where: { id: companies.get("Fintrust Bank")! }, data: { primaryContactId: customers.get("david.okafor@fintrustbank.com") } });
-  await prisma.company.update({ where: { id: companies.get("Harbor Logistics")! }, data: { primaryContactId: customers.get("tom.whitfield@harborlogistics.com") } });
+  await prisma.company.update({ where: { id: companies.get("Acme Ltd")! }, data: { primaryContactId: customers.get("jarrod.kim@acmeltd.example") } });
+  await prisma.company.update({ where: { id: companies.get("Nimbus Cloud Systems")! }, data: { primaryContactId: customers.get("marcus.lee@nimbuscloud.example") } });
+  await prisma.company.update({ where: { id: companies.get("Brightside Retail Co")! }, data: { primaryContactId: customers.get("hannah.foster@brightsideretail.example") } });
+  await prisma.company.update({ where: { id: companies.get("Fintrust Bank")! }, data: { primaryContactId: customers.get("david.okafor@fintrustbank.example") } });
+  await prisma.company.update({ where: { id: companies.get("Harbor Logistics")! }, data: { primaryContactId: customers.get("tom.whitfield@harborlogistics.example") } });
 
   console.log("Seeding tickets...");
   type Row = {
@@ -245,39 +246,39 @@ async function main() {
   };
 
   const rows: Row[] = [
-    { subject: "Payment gateway returning timeout", description: "Our customers are receiving a timeout error when trying to make payments through the checkout flow. This started roughly an hour ago and is affecting most transactions.", priority: "HIGH", status: "IN_PROGRESS", category: "Payment Integration", subcategory: "Gateway Errors", customer: "jarrod.kim@acmeltd.com", daysAgo: 1, tags: ["Payment Issue", "Urgent"] },
-    { subject: "Customer unable to reset password", description: "A customer reports that the password reset email never arrives, even after multiple attempts and checking spam.", priority: "MEDIUM", status: "RESOLVED", category: "Account & Access", subcategory: "Password Reset", customer: "chloe.adams@gmail.com", daysAgo: 12 },
-    { subject: "Microsoft 365 mailbox not syncing", description: "Emails sent to our support inbox are not appearing in Outlook. Sync appears stuck as of this morning.", priority: "MEDIUM", status: "OPEN", category: "Email & Sync", subcategory: "Mailbox Sync", customer: "hannah.foster@brightsideretail.com", daysAgo: 2 },
-    { subject: "Website checkout failing", description: "Multiple customers report the checkout page throws a 500 error right after entering shipping details.", priority: "CRITICAL", status: "IN_PROGRESS", category: "Website & Checkout", subcategory: "Checkout Errors", customer: "hannah.foster@brightsideretail.com", daysAgo: 0, tags: ["Bug", "Urgent"] },
-    { subject: "API authentication returning 401", description: "Our integration started receiving 401 Unauthorized responses from your API this morning despite using the same API key.", priority: "HIGH", status: "NEW", category: "Infrastructure", subcategory: "Server Issues", customer: "marcus.lee@nimbuscloud.io", daysAgo: 0 },
-    { subject: "VPN connection dropping", description: "Remote staff are experiencing intermittent VPN disconnects every 10-15 minutes since yesterday's maintenance window.", priority: "MEDIUM", status: "PENDING_CUSTOMER", category: "Infrastructure", subcategory: "Network/VPN", customer: "tom.whitfield@harborlogistics.com", daysAgo: 3 },
-    { subject: "Invoice payment incorrectly allocated", description: "Our last payment was applied to the wrong invoice number, leaving the correct invoice showing as unpaid.", priority: "LOW", status: "RESOLVED", category: "Billing", subcategory: "Invoices", customer: "david.okafor@fintrustbank.com", daysAgo: 15, tags: ["Billing"] },
-    { subject: "Customer account locked", description: "A customer was locked out after several failed login attempts and needs manual unlock.", priority: "HIGH", status: "OPEN", category: "Account & Access", subcategory: "Account Lockout", customer: "ryan.mitchell@outlook.com", daysAgo: 1 },
-    { subject: "Server disk space warning", description: "Monitoring is showing the primary application server at 92% disk usage and climbing.", priority: "URGENT", status: "IN_PROGRESS", category: "Infrastructure", subcategory: "Server Issues", customer: "marcus.lee@nimbuscloud.io", daysAgo: 0, tags: ["Outage"] },
-    { subject: "SSL certificate expiring", description: "The SSL certificate for our checkout subdomain expires in 5 days and needs to be renewed before then.", priority: "MEDIUM", status: "NEW", category: "Infrastructure", subcategory: "SSL Certificates", customer: "hannah.foster@brightsideretail.com", daysAgo: 0 },
-    { subject: "Payment gateway not processing transactions", description: "Our customers are receiving an error when trying to make payments. Attached is a screenshot of the failure.", priority: "HIGH", status: "IN_PROGRESS", category: "Payment Integration", subcategory: "Gateway Errors", customer: "jarrod.kim@acmeltd.com", daysAgo: 2, tags: ["Payment Issue"] },
-    { subject: "Duplicate charge on customer card", description: "A customer was charged twice for the same order and is requesting an immediate refund of the duplicate.", priority: "URGENT", status: "PENDING_INTERNAL", category: "Payment Integration", subcategory: "Failed Transactions", customer: "isabella.cruz@acmeltd.com", daysAgo: 1, tags: ["Payment Issue", "VIP"] },
-    { subject: "Refund not reflecting in customer account", description: "We processed a refund five days ago but the customer says it still hasn't appeared on their statement.", priority: "MEDIUM", status: "OPEN", category: "Payment Integration", subcategory: "Refunds", customer: "priya.desai@yahoo.com", daysAgo: 4 },
-    { subject: "Unable to log in after password reset", description: "After resetting the password the new credentials are rejected with an invalid-password error.", priority: "LOW", status: "RESOLVED", category: "Account & Access", subcategory: "Login Issues", customer: "ryan.mitchell@outlook.com", daysAgo: 9 },
-    { subject: "Two-factor authentication codes not arriving", description: "SMS codes for 2FA are not being delivered, blocking the customer from logging in entirely.", priority: "HIGH", status: "NEW", category: "Account & Access", subcategory: "Login Issues", customer: "elena.vasquez@fintrustbank.com", daysAgo: 0, tags: ["Security"] },
-    { subject: "Calendar events not syncing to mobile", description: "Calendar entries created on desktop are not showing up on the mobile app after several hours.", priority: "LOW", status: "OPEN", category: "Email & Sync", subcategory: "Calendar Sync", customer: "chloe.adams@gmail.com", daysAgo: 3 },
-    { subject: "Bulk email delivery delayed", description: "Our marketing newsletter sent this morning is still showing as queued for a large portion of recipients.", priority: "MEDIUM", status: "IN_PROGRESS", category: "Email & Sync", subcategory: "Email Delivery", customer: "hannah.foster@brightsideretail.com", daysAgo: 1 },
-    { subject: "Shopping cart items disappearing", description: "Items added to the cart vanish after navigating between product pages on mobile Safari.", priority: "HIGH", status: "OPEN", category: "Website & Checkout", subcategory: "Cart Issues", customer: "jarrod.kim@acmeltd.com", daysAgo: 2, tags: ["Bug"] },
-    { subject: "Checkout page loading slowly", description: "The checkout page is taking 8-10 seconds to load during peak hours, causing cart abandonment.", priority: "MEDIUM", status: "RESOLVED", category: "Website & Checkout", subcategory: "Page Performance", customer: "isabella.cruz@acmeltd.com", daysAgo: 18 },
-    { subject: "Suspicious login attempts detected", description: "Our security monitoring flagged over 200 failed login attempts from a single IP range targeting admin accounts.", priority: "CRITICAL", status: "IN_PROGRESS", category: "Security", subcategory: "Suspicious Activity", customer: "david.okafor@fintrustbank.com", daysAgo: 0, tags: ["Security", "Urgent"] },
-    { subject: "Request for elevated admin access", description: "A new team member needs temporary admin access to the billing dashboard for month-end reconciliation.", priority: "LOW", status: "PENDING_INTERNAL", category: "Security", subcategory: "Access Requests", customer: "marcus.lee@nimbuscloud.io", daysAgo: 2 },
-    { subject: "Third-party vulnerability scan flagged outdated library", description: "Our annual security audit flagged an outdated dependency in the integration SDK you provided.", priority: "HIGH", status: "NEW", category: "Security", subcategory: "Vulnerability Reports", customer: "david.okafor@fintrustbank.com", daysAgo: 0, tags: ["Security"] },
-    { subject: "Monthly invoice shows wrong tax amount", description: "This month's invoice applies the wrong tax rate for our region, overcharging us by roughly 4%.", priority: "MEDIUM", status: "OPEN", category: "Billing", subcategory: "Invoices", customer: "tom.whitfield@harborlogistics.com", daysAgo: 3, tags: ["Billing"] },
-    { subject: "Need to upgrade subscription plan", description: "We'd like to move from the Standard plan to Premium ahead of our busy season.", priority: "LOW", status: "RESOLVED", category: "Billing", subcategory: "Subscription Changes", customer: "hannah.foster@brightsideretail.com", daysAgo: 20 },
-    { subject: "Credit card on file expired", description: "Our card on file expired last week and the last auto-renewal attempt failed.", priority: "MEDIUM", status: "PENDING_CUSTOMER", category: "Billing", subcategory: "Payment Methods", customer: "priya.desai@yahoo.com", daysAgo: 5, tags: ["Billing"] },
-    { subject: "Network latency spikes during peak hours", description: "We're seeing 300ms+ latency spikes on API calls between 2-4pm daily this week.", priority: "HIGH", status: "IN_PROGRESS", category: "Infrastructure", subcategory: "Server Issues", customer: "marcus.lee@nimbuscloud.io", daysAgo: 1 },
-    { subject: "Integration webhook failing silently", description: "Our order-completed webhook stopped firing two days ago with no error logged on either side.", priority: "URGENT", status: "OPEN", category: "Payment Integration", subcategory: "Gateway Errors", customer: "jarrod.kim@acmeltd.com", daysAgo: 1, tags: ["Payment Issue", "Bug"] },
-    { subject: "Mobile app crashing on login", description: "The iOS app crashes immediately after entering valid credentials, reproducible on iPhone 14 and 15.", priority: "HIGH", status: "NEW", category: "Account & Access", subcategory: "Login Issues", customer: "ryan.mitchell@outlook.com", daysAgo: 0, tags: ["Bug"] },
-    { subject: "Export report stuck at 0%", description: "Generating a CSV export of the last quarter's tickets has been stuck at 0% for over an hour.", priority: "LOW", status: "CLOSED", category: "Website & Checkout", subcategory: "Page Performance", customer: "elena.vasquez@fintrustbank.com", daysAgo: 22 },
-    { subject: "Data export missing recent records", description: "The nightly data export is missing the last three days of transaction records.", priority: "MEDIUM", status: "RESOLVED", category: "Infrastructure", subcategory: "Server Issues", customer: "david.okafor@fintrustbank.com", daysAgo: 10 },
-    { subject: "Spam emails bypassing filters", description: "We're seeing a noticeable increase in spam reaching inboxes despite filters being enabled.", priority: "LOW", status: "OPEN", category: "Security", subcategory: "Suspicious Activity", customer: "chloe.adams@gmail.com", daysAgo: 4 },
-    { subject: "Account merge request for duplicate customer", description: "A customer accidentally created two accounts and would like them merged into one.", priority: "LOW", status: "CANCELLED", category: "Account & Access", subcategory: "Account Lockout", customer: "priya.desai@yahoo.com", daysAgo: 14 },
-    { subject: "Critical outage: entire platform unreachable", description: "The platform was completely unreachable for approximately 40 minutes this morning across all regions.", priority: "CRITICAL", status: "RESOLVED", category: "Infrastructure", subcategory: "Server Issues", customer: "marcus.lee@nimbuscloud.io", daysAgo: 7, tags: ["Outage", "Urgent"] },
+    { subject: "Payment gateway returning timeout", description: "Our customers are receiving a timeout error when trying to make payments through the checkout flow. This started roughly an hour ago and is affecting most transactions.", priority: "HIGH", status: "IN_PROGRESS", category: "Payment Integration", subcategory: "Gateway Errors", customer: "jarrod.kim@acmeltd.example", daysAgo: 1, tags: ["Payment Issue", "Urgent"] },
+    { subject: "Customer unable to reset password", description: "A customer reports that the password reset email never arrives, even after multiple attempts and checking spam.", priority: "MEDIUM", status: "RESOLVED", category: "Account & Access", subcategory: "Password Reset", customer: "chloe.adams@mail.example", daysAgo: 12 },
+    { subject: "Microsoft 365 mailbox not syncing", description: "Emails sent to our support inbox are not appearing in Outlook. Sync appears stuck as of this morning.", priority: "MEDIUM", status: "OPEN", category: "Email & Sync", subcategory: "Mailbox Sync", customer: "hannah.foster@brightsideretail.example", daysAgo: 2 },
+    { subject: "Website checkout failing", description: "Multiple customers report the checkout page throws a 500 error right after entering shipping details.", priority: "CRITICAL", status: "IN_PROGRESS", category: "Website & Checkout", subcategory: "Checkout Errors", customer: "hannah.foster@brightsideretail.example", daysAgo: 0, tags: ["Bug", "Urgent"] },
+    { subject: "API authentication returning 401", description: "Our integration started receiving 401 Unauthorized responses from your API this morning despite using the same API key.", priority: "HIGH", status: "NEW", category: "Infrastructure", subcategory: "Server Issues", customer: "marcus.lee@nimbuscloud.example", daysAgo: 0 },
+    { subject: "VPN connection dropping", description: "Remote staff are experiencing intermittent VPN disconnects every 10-15 minutes since yesterday's maintenance window.", priority: "MEDIUM", status: "PENDING_CUSTOMER", category: "Infrastructure", subcategory: "Network/VPN", customer: "tom.whitfield@harborlogistics.example", daysAgo: 3 },
+    { subject: "Invoice payment incorrectly allocated", description: "Our last payment was applied to the wrong invoice number, leaving the correct invoice showing as unpaid.", priority: "LOW", status: "RESOLVED", category: "Billing", subcategory: "Invoices", customer: "david.okafor@fintrustbank.example", daysAgo: 15, tags: ["Billing"] },
+    { subject: "Customer account locked", description: "A customer was locked out after several failed login attempts and needs manual unlock.", priority: "HIGH", status: "OPEN", category: "Account & Access", subcategory: "Account Lockout", customer: "ryan.mitchell@mail.example", daysAgo: 1 },
+    { subject: "Server disk space warning", description: "Monitoring is showing the primary application server at 92% disk usage and climbing.", priority: "URGENT", status: "IN_PROGRESS", category: "Infrastructure", subcategory: "Server Issues", customer: "marcus.lee@nimbuscloud.example", daysAgo: 0, tags: ["Outage"] },
+    { subject: "SSL certificate expiring", description: "The SSL certificate for our checkout subdomain expires in 5 days and needs to be renewed before then.", priority: "MEDIUM", status: "NEW", category: "Infrastructure", subcategory: "SSL Certificates", customer: "hannah.foster@brightsideretail.example", daysAgo: 0 },
+    { subject: "Payment gateway not processing transactions", description: "Our customers are receiving an error when trying to make payments. Attached is a screenshot of the failure.", priority: "HIGH", status: "IN_PROGRESS", category: "Payment Integration", subcategory: "Gateway Errors", customer: "jarrod.kim@acmeltd.example", daysAgo: 2, tags: ["Payment Issue"] },
+    { subject: "Duplicate charge on customer card", description: "A customer was charged twice for the same order and is requesting an immediate refund of the duplicate.", priority: "URGENT", status: "PENDING_INTERNAL", category: "Payment Integration", subcategory: "Failed Transactions", customer: "isabella.cruz@acmeltd.example", daysAgo: 1, tags: ["Payment Issue", "VIP"] },
+    { subject: "Refund not reflecting in customer account", description: "We processed a refund five days ago but the customer says it still hasn't appeared on their statement.", priority: "MEDIUM", status: "OPEN", category: "Payment Integration", subcategory: "Refunds", customer: "priya.desai@mail.example", daysAgo: 4 },
+    { subject: "Unable to log in after password reset", description: "After resetting the password the new credentials are rejected with an invalid-password error.", priority: "LOW", status: "RESOLVED", category: "Account & Access", subcategory: "Login Issues", customer: "ryan.mitchell@mail.example", daysAgo: 9 },
+    { subject: "Two-factor authentication codes not arriving", description: "SMS codes for 2FA are not being delivered, blocking the customer from logging in entirely.", priority: "HIGH", status: "NEW", category: "Account & Access", subcategory: "Login Issues", customer: "elena.vasquez@fintrustbank.example", daysAgo: 0, tags: ["Security"] },
+    { subject: "Calendar events not syncing to mobile", description: "Calendar entries created on desktop are not showing up on the mobile app after several hours.", priority: "LOW", status: "OPEN", category: "Email & Sync", subcategory: "Calendar Sync", customer: "chloe.adams@mail.example", daysAgo: 3 },
+    { subject: "Bulk email delivery delayed", description: "Our marketing newsletter sent this morning is still showing as queued for a large portion of recipients.", priority: "MEDIUM", status: "IN_PROGRESS", category: "Email & Sync", subcategory: "Email Delivery", customer: "hannah.foster@brightsideretail.example", daysAgo: 1 },
+    { subject: "Shopping cart items disappearing", description: "Items added to the cart vanish after navigating between product pages on mobile Safari.", priority: "HIGH", status: "OPEN", category: "Website & Checkout", subcategory: "Cart Issues", customer: "jarrod.kim@acmeltd.example", daysAgo: 2, tags: ["Bug"] },
+    { subject: "Checkout page loading slowly", description: "The checkout page is taking 8-10 seconds to load during peak hours, causing cart abandonment.", priority: "MEDIUM", status: "RESOLVED", category: "Website & Checkout", subcategory: "Page Performance", customer: "isabella.cruz@acmeltd.example", daysAgo: 18 },
+    { subject: "Suspicious login attempts detected", description: "Our security monitoring flagged over 200 failed login attempts from a single IP range targeting admin accounts.", priority: "CRITICAL", status: "IN_PROGRESS", category: "Security", subcategory: "Suspicious Activity", customer: "david.okafor@fintrustbank.example", daysAgo: 0, tags: ["Security", "Urgent"] },
+    { subject: "Request for elevated admin access", description: "A new team member needs temporary admin access to the billing dashboard for month-end reconciliation.", priority: "LOW", status: "PENDING_INTERNAL", category: "Security", subcategory: "Access Requests", customer: "marcus.lee@nimbuscloud.example", daysAgo: 2 },
+    { subject: "Third-party vulnerability scan flagged outdated library", description: "Our annual security audit flagged an outdated dependency in the integration SDK you provided.", priority: "HIGH", status: "NEW", category: "Security", subcategory: "Vulnerability Reports", customer: "david.okafor@fintrustbank.example", daysAgo: 0, tags: ["Security"] },
+    { subject: "Monthly invoice shows wrong tax amount", description: "This month's invoice applies the wrong tax rate for our region, overcharging us by roughly 4%.", priority: "MEDIUM", status: "OPEN", category: "Billing", subcategory: "Invoices", customer: "tom.whitfield@harborlogistics.example", daysAgo: 3, tags: ["Billing"] },
+    { subject: "Need to upgrade subscription plan", description: "We'd like to move from the Standard plan to Premium ahead of our busy season.", priority: "LOW", status: "RESOLVED", category: "Billing", subcategory: "Subscription Changes", customer: "hannah.foster@brightsideretail.example", daysAgo: 20 },
+    { subject: "Credit card on file expired", description: "Our card on file expired last week and the last auto-renewal attempt failed.", priority: "MEDIUM", status: "PENDING_CUSTOMER", category: "Billing", subcategory: "Payment Methods", customer: "priya.desai@mail.example", daysAgo: 5, tags: ["Billing"] },
+    { subject: "Network latency spikes during peak hours", description: "We're seeing 300ms+ latency spikes on API calls between 2-4pm daily this week.", priority: "HIGH", status: "IN_PROGRESS", category: "Infrastructure", subcategory: "Server Issues", customer: "marcus.lee@nimbuscloud.example", daysAgo: 1 },
+    { subject: "Integration webhook failing silently", description: "Our order-completed webhook stopped firing two days ago with no error logged on either side.", priority: "URGENT", status: "OPEN", category: "Payment Integration", subcategory: "Gateway Errors", customer: "jarrod.kim@acmeltd.example", daysAgo: 1, tags: ["Payment Issue", "Bug"] },
+    { subject: "Mobile app crashing on login", description: "The iOS app crashes immediately after entering valid credentials, reproducible on iPhone 14 and 15.", priority: "HIGH", status: "NEW", category: "Account & Access", subcategory: "Login Issues", customer: "ryan.mitchell@mail.example", daysAgo: 0, tags: ["Bug"] },
+    { subject: "Export report stuck at 0%", description: "Generating a CSV export of the last quarter's tickets has been stuck at 0% for over an hour.", priority: "LOW", status: "CLOSED", category: "Website & Checkout", subcategory: "Page Performance", customer: "elena.vasquez@fintrustbank.example", daysAgo: 22 },
+    { subject: "Data export missing recent records", description: "The nightly data export is missing the last three days of transaction records.", priority: "MEDIUM", status: "RESOLVED", category: "Infrastructure", subcategory: "Server Issues", customer: "david.okafor@fintrustbank.example", daysAgo: 10 },
+    { subject: "Spam emails bypassing filters", description: "We're seeing a noticeable increase in spam reaching inboxes despite filters being enabled.", priority: "LOW", status: "OPEN", category: "Security", subcategory: "Suspicious Activity", customer: "chloe.adams@mail.example", daysAgo: 4 },
+    { subject: "Account merge request for duplicate customer", description: "A customer accidentally created two accounts and would like them merged into one.", priority: "LOW", status: "CANCELLED", category: "Account & Access", subcategory: "Account Lockout", customer: "priya.desai@mail.example", daysAgo: 14 },
+    { subject: "Critical outage: entire platform unreachable", description: "The platform was completely unreachable for approximately 40 minutes this morning across all regions.", priority: "CRITICAL", status: "RESOLVED", category: "Infrastructure", subcategory: "Server Issues", customer: "marcus.lee@nimbuscloud.example", daysAgo: 7, tags: ["Outage", "Urgent"] },
   ];
 
   const agentReplies = [
@@ -440,7 +441,7 @@ async function main() {
   console.log(`Seeded ${ticketCount} tickets.`);
 
   console.log("Seeding knowledge base articles...");
-  const kbAuthor = users.get("leader@helpdesksaas.com")!.id;
+  const kbAuthor = users.get("leader@deskly.example")!.id;
   const kbArticles = [
     { title: "Getting started with your support portal", category: "GETTING_STARTED", slug: "getting-started-support-portal", content: "Learn how to submit tickets, track status and communicate with our support team through the customer portal." },
     { title: "How to reset your account password", category: "ACCOUNT", slug: "reset-account-password", content: "Step-by-step instructions for resetting a forgotten password, including troubleshooting for emails that don't arrive." },
@@ -479,7 +480,7 @@ async function main() {
       description: "Automatically assigns tickets in the Payment Integration category to the Payments team.",
       triggerOn: "TICKET_CREATED",
       conditions: [{ field: "CATEGORY", operator: "equals", value: "Payment Integration" }],
-      createdById: users.get("admin@helpdesksaas.com")!.id,
+      createdById: users.get("admin@deskly.example")!.id,
       actions: { create: [{ type: "ASSIGN_TEAM", value: { teamName: "Payments" }, order: 0 }] },
     },
   });
@@ -492,7 +493,7 @@ async function main() {
       description: "Critical tickets are routed to Technical Support and trigger an immediate notification.",
       triggerOn: "TICKET_CREATED",
       conditions: [{ field: "PRIORITY", operator: "equals", value: "CRITICAL" }],
-      createdById: users.get("admin@helpdesksaas.com")!.id,
+      createdById: users.get("admin@deskly.example")!.id,
       actions: {
         create: [
           { type: "ASSIGN_TEAM", value: { teamName: "Technical Support" }, order: 0 },
@@ -511,7 +512,7 @@ async function main() {
       triggerOn: "TICKET_CREATED",
       isActive: false,
       conditions: [{ field: "COMPANY_PLAN", operator: "equals", value: "ENTERPRISE" }],
-      createdById: users.get("manager@helpdesksaas.com")!.id,
+      createdById: users.get("manager@deskly.example")!.id,
       actions: { create: [{ type: "ADD_TAG", value: { tagName: "VIP" }, order: 0 }] },
     },
   });
@@ -538,7 +539,7 @@ async function main() {
         type: t.resolutionSla === "BREACHED" ? "SLA_BREACHED" : "SLA_AT_RISK",
         title: t.resolutionSla === "BREACHED" ? "SLA breached" : "SLA at risk",
         body: `${t.subject} resolution SLA is ${t.resolutionSla === "BREACHED" ? "breached" : "at risk"}.`,
-        userId: t.assignedAgentId ?? users.get("manager@helpdesksaas.com")!.id,
+        userId: t.assignedAgentId ?? users.get("manager@deskly.example")!.id,
         ticketId: t.id,
         isRead: false,
       },
@@ -547,12 +548,12 @@ async function main() {
 
   console.log("Seeding audit log...");
   const auditEntries = [
-    { action: "user.sign_in", entityType: "User", actor: "admin@helpdesksaas.com" },
-    { action: "ticket.status_changed", entityType: "Ticket", actor: "agent@helpdesksaas.com" },
-    { action: "team.created", entityType: "Team", actor: "admin@helpdesksaas.com" },
-    { action: "sla_policy.updated", entityType: "SLAPolicy", actor: "manager@helpdesksaas.com" },
-    { action: "automation.executed", entityType: "Automation", actor: "admin@helpdesksaas.com" },
-    { action: "role.permissions_updated", entityType: "Role", actor: "superadmin@helpdesksaas.com" },
+    { action: "user.sign_in", entityType: "User", actor: "admin@deskly.example" },
+    { action: "ticket.status_changed", entityType: "Ticket", actor: "agent@deskly.example" },
+    { action: "team.created", entityType: "Team", actor: "admin@deskly.example" },
+    { action: "sla_policy.updated", entityType: "SLAPolicy", actor: "manager@deskly.example" },
+    { action: "automation.executed", entityType: "Automation", actor: "admin@deskly.example" },
+    { action: "role.permissions_updated", entityType: "Role", actor: "superadmin@deskly.example" },
   ];
   for (const [i, e] of auditEntries.entries()) {
     await prisma.auditLog.create({
